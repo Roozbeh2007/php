@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>php</title>
+</head>
+<body>
+    
+    <h1>Config</h1>
+    <pre>
+        $db=mysqli_connect("localhost","root","","myweb");
+        if ($db) {
+            session_start();
+        }
+    </pre>
+
+    <h1>Register</h1>
+    <pre>
+        if (isset($_POST["register"])) {
+            $email = $_POST['email'];
+            $password = md5($_POST['password']);
+            $repass = md5($_POST['repassword']);
+            if ($password != $repass) {
+               echo "Your Password Does Not Match";
+            } else {
+               mysqli_query($db, "INSERT INTO `user`(email, password) VALUES ('$email','$password')");
+               header("location: ../login/login.php");
+               echo"Register Failed";
+            }
+         }
+    </pre>
+
+    <h1>Login</h1>
+    <pre>
+        if (isset($_POST["login"])) {
+            $email = $_POST['email'];
+            $password = md5($_POST['password']);
+            $check = mysqli_query($db, "SELECT * FROM user WHERE email='$email' AND password='$password'");
+            if (mysqli_num_rows($check) > 0) {
+               $_SESSION['user-name']=$email;
+               header("location:../profile/profile.php");
+               echo "Login Successful";
+            } 
+            else {
+               header("location:../register/register.php");
+               echo "Login Failed";
+            }
+         }
+    </pre>
+
+    <h1>Do log out</h1>
+    <pre>
+        require_once "config.php";
+        if (isset($_SESSION['user-name'])) {
+            unset($_SESSION['user-name']);
+            header("location:../login/login.php");
+        }
+    </pre>
+
+    <h1>Profile</h1>
+    <pre>
+        if (!isset($_SESSION['user-name'])) {
+            header("location:../login/login.php");
+        }
+        
+        $email=$_SESSION['user-name'];
+        $username=mysqli_query($db, "SELECT * FROM user WHERE email='$email'");
+        $user=mysqli_fetch_array($username);
+    </pre>
+
+</body>
+</html>
