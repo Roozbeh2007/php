@@ -67,6 +67,23 @@
         $email=$_SESSION['user-name'];
         $username=mysqli_query($db, "SELECT * FROM user WHERE email='$email'");
         $user=mysqli_fetch_array($username);
+
+        echo $user['email'] 
+    </pre>
+
+    <h1>Login Admim</h1>
+    <pre>
+        if (isset($_POST["login_admin"])) {
+            $user = $_POST['username'];
+            $password = $_POST['password'];
+            if ($user == $adminuser && $password == $adminpassword) {
+               $_SESSION['admin-user']=true;
+               header("location:index.php");
+            } 
+            else{
+               echo "fail";
+            }
+         }
     </pre>
 
 </body>
